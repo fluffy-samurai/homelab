@@ -1,48 +1,16 @@
 version: "3.7"
-volumes:
-  prometheus_data:
-  grafana_data:
 services:
-  postgres:
-    container_name: postgres
-    image: postgres
-    restart: always
+  ddclient:
+    image: linuxserver/ddclient
+    container_name: ddclient
     environment:
-      POSTGRES_PASSWORD: example
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
-
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:latest
-    restart: always
-    environment:
-      TZ:
-    ports:
-      - 9090:9090
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:latest
-    restart: always
-    depends_on:
-      - prometheus
-    environment:
-      TZ:
+      - ./volumes/ddclient/config:/config
+    restart: unless-stopped
+  hello_world:
+    image: nginxdemos/hello
     ports:
-      - 3000:3000
-    environment:
-      GF_SECURITY_ADMIN_USER:
-      GF_SECURITY_ADMIN_PASSWORD:
-    volumes:
-      - ./grafana/provisioning/:/etc/grafana/provisioning/
-      - grafana_data:/var/lib/grafana
+      - 80:80
