@@ -14,7 +14,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 3Gi
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -76,9 +76,11 @@ spec:
           - name: MODE
             value: creative
           - name: MOTD
-            value: Welcome to the Fluffy Samurai Server!
+            value: "You can't take the sky from me."
           - name: ALLOW_FLIGHT
             value: 'TRUE'
+          - name: SERVER_NAME
+            value: Fluffy Samurai
         ports:
         - containerPort: 25565
           name: minecraft
@@ -113,6 +115,6 @@ spec:
   type: NodePort
   ports:
     - port: 25565
-      nodePort: 30565
+      nodePort: 31000
   selector:
     app: minecraft-server
