@@ -3,43 +3,43 @@ kind: Namespace
 metadata:
   name:  minecraft
 ---
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: minecraft-data-pvc
-  namespace: minecraft
-spec:
-  storageClassName: local-storage
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
+#kind: PersistentVolumeClaim
+#apiVersion: v1
+#metadata:
+#  name: minecraft-data-pvc
+#  namespace: minecraft
+#spec:
+#  storageClassName: local-storage
+#  accessModes:
+#    - ReadWriteOnce
+#  resources:
+#    requests:
+#      storage: 10Gi
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: minecraft-data
-  namespace: minecraft
-spec:
-  capacity:
-    storage: 10Gi
-  volumeMode: Filesystem
-  accessModes:
-  - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  storageClassName: local-storage
-  local:
-    # Edit this to be an actual path on your server's filesystem
-    path: /mnt/local-volumes/minecraft
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - mimir # Edit this to be an actual kubernetes name of your server
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: minecraft-data
+#  namespace: minecraft
+#spec:
+#  capacity:
+#    storage: 10Gi
+#  volumeMode: Filesystem
+#  accessModes:
+#  - ReadWriteOnce
+#  persistentVolumeReclaimPolicy: Delete
+#  storageClassName: local-storage
+#  local:
+#    # Edit this to be an actual path on your server's filesystem
+#    path: /mnt/local-volumes/minecraft
+#  nodeAffinity:
+#    required:
+#      nodeSelectorTerms:
+#      - matchExpressions:
+#        - key: kubernetes.io/hostname
+#          operator: In
+#          values:
+#          - mimir # Edit this to be an actual kubernetes name of your server
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,8 +60,11 @@ spec:
     spec:
       volumes:
       - name: minecraft-data
-        persistentVolumeClaim:
-          claimName: minecraft-data-pvc
+        #        persistentVolumeClaim:
+        #  claimName: minecraft-data-pvc
+        hostPath: 
+          path: /mnt/local-volumes/minecraft
+          type: Directory
       containers:
       - name: minecraft-server
         image: itzg/minecraft-server:latest
